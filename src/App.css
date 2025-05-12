@@ -6,7 +6,7 @@ html, body {
   height: 100vh;
   overflow: hidden;
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #4f6dff 0%, #a166ff 100%);
+  background: linear-gradient(135deg, #334081 0%, #8c53e7 100%);
   color: #fff;
 }
 
@@ -17,17 +17,23 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-/* Title */
+/* Center the title and ensure the orbit array is centered visually */
 h1 {
-  color: #fff;
-  font-size: 2.5rem;
+  position: static;
+  display: block;
+  width: auto;
+  text-align: center;
   margin-top: 2rem;
   margin-bottom: 2rem;
+  color: #fff;
+  font-size: 2.5rem;
   font-weight: bold;
-  text-align: center;
+  z-index: 10;
+  transform: none;
+  align-self: center;
 }
 
 /* Main circle UI area, sized for iPad landscape */
@@ -44,9 +50,12 @@ h1 {
   justify-content: center;
 }
 
-/* Centerpiece */
+/* Center the centerpiece absolutely in the viewport */
 .centerpiece {
   position: relative;
+  margin: 0 auto;
+  top: 0;
+  left: 0;
   width: 440px;
   height: 440px;
   max-width: 90vw;
@@ -56,13 +65,17 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: none;
 }
 
 /* Orbit array fills the circle */
 .icon-orbit-array {
-  position: relative;
+  position: absolute;
+  top: 100%; /* Shift down to align vertically */
+  left: 50%;
   width: 100%;
   height: 100%;
+  transform: translate(-50%, -50%);
 }
 
 /* Each icon is absolutely positioned in a circle */
@@ -75,11 +88,11 @@ h1 {
 
 /* Blob is perfectly centered and sized */
 .blob-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 38%;
-  height: 38%;
+  position: relative;
+  left: 50%; /* Move left to align with the red circle */
+  top: 100%;  /* Move down to align with the red circle */
+  width: 75%; /* Increased from 50% to 75% for 50% larger size */
+  height: 75%;
   transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
@@ -103,6 +116,53 @@ h1 {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* ZibbyBlob styles for organic animation and color pulsation */
+.zibby-blob-outer {
+  width: 270px; /* Increased from 180px to 270px for 50% larger size */
+  height: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.zibby-blob-svg {
+  width: 100%;
+  height: 100%;
+  filter: blur(10px) drop-shadow(0 0 48px #00ffe1aa) drop-shadow(0 0 32px #a166ffaa);
+  transition: filter 0.3s;
+}
+
+.zibby-blob-idle {
+  animation: zibbyBlobPulse 2.5s ease-in-out infinite;
+}
+
+.zibby-blob-speaking {
+  animation: zibbyBlobPulseSpeaking 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 48px #00ffe1cc) drop-shadow(0 0 24px #a166ffcc);
+}
+
+.zibby-blob-listening {
+  animation: zibbyBlobPulseListening 0.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 48px #a166ffcc) drop-shadow(0 0 24px #00ffe1cc);
+}
+
+@keyframes zibbyBlobPulse {
+  0%, 100% { filter: drop-shadow(0 0 32px #00ffe1aa) drop-shadow(0 0 16px #a166ffaa); }
+  50% { filter: drop-shadow(0 0 48px #a166ffcc) drop-shadow(0 0 24px #00ffe1cc); }
+}
+
+@keyframes zibbyBlobPulseSpeaking {
+  0%, 100% { filter: drop-shadow(0 0 48px #00ffe1cc) drop-shadow(0 0 24px #a166ffcc); }
+  50% { filter: drop-shadow(0 0 64px #00ffe1) drop-shadow(0 0 32px #a166ff); }
+}
+
+@keyframes zibbyBlobPulseListening {
+  0%, 100% { filter: drop-shadow(0 0 48px #a166ffcc) drop-shadow(0 0 24px #00ffe1cc); }
+  50% { filter: drop-shadow(0 0 64px #a166ff) drop-shadow(0 0 32px #00ffe1); }
 }
 
 /* IconButton styles */
@@ -169,59 +229,4 @@ h1 {
   margin-top: 0.2em;
   font-size: 1.15em;
   text-shadow: 0 1px 4px #0002;
-}
-
-/* --- Animated Particles Styles --- */
-.particles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.7;
-  animation: floatParticle 12s ease-in-out infinite;
-  animation-delay: calc(-1s * var(--i));
-  animation-duration: calc(10s + 2s * var(--i));
-  top: calc(100% * var(--y));
-  left: calc(100% * var(--x));
-}
-
-@keyframes floatParticle {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translate(10px, -200px) scale(1.3);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-10px, -400px) scale(1);
-    opacity: 0;
-  }
-}
-
-.particle:nth-child(odd) {
-  background: #00ffe1;
-}
-
-.particle:nth-child(even) {
-  background: #ff00b8;
-}
-
-.particle:nth-child(3n) {
-  background: #ffffff;
-  width: 4px;
-  height: 4px;
 }

@@ -1,50 +1,57 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import './App.css';
 
-const moodStyles = {
-  calm: {
-    fill: 'url(#calmGradient)',
-    glow: 'rgba(0, 255, 225, 0.4)',
-  },
-};
+/**
+ * ZibbyBlob
+ * Props:
+ * - mode: 'idle' | 'speaking' | 'listening'
+ *   Controls the animation and color mode of the blob.
+ */
+function ZibbyBlob({ mode = 'idle' }) {
+  const blobRef = useRef(null);
 
-function ZibbyBlob({ mood = 'calm' }) {
-  const style = moodStyles[mood] || moodStyles['calm'];
+  useEffect(() => {
+    if (!blobRef.current) return;
+    // Remove all mode classes
+    blobRef.current.classList.remove('zibby-blob-speaking', 'zibby-blob-listening', 'zibby-blob-idle');
+    // Add current mode class
+    blobRef.current.classList.add(`zibby-blob-${mode}`);
+  }, [mode]);
 
   return (
-    <div
-      className="blob-container"
-      style={{
-        filter: `drop-shadow(0 0 30px ${style.glow})`,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        pointerEvents: 'none',
-      }}
-    >
+    <div className="zibby-blob-outer">
       <svg
+        ref={blobRef}
+        className="zibby-blob-svg"
         viewBox="0 0 200 200"
-        preserveAspectRatio="xMidYMid meet"
-        className="zibby-svg-blob"
-        style={{ opacity: 0.85, width: '100%', height: '100%' }}
+        width="100%"
+        height="100%"
       >
         <defs>
-          <radialGradient id="calmGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#00ffe1" />
-            <stop offset="100%" stopColor="#7b61ff" />
+          <radialGradient id="zibbyGradient" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stopColor="#7fffe1" stopOpacity="0.7">
+              <animate attributeName="stop-color" values="#7fffe1;#e0b8ff;#a1e6ff;#7fffe1" dur="4s" repeatCount="indefinite" />
+              <animate attributeName="stop-opacity" values="0.7;0.5;0.6;0.7" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="50%" stopColor="#a1a6ff" stopOpacity="0.5">
+              <animate attributeName="stop-color" values="#a1a6ff;#ffe0fb;#7fffe1;#a1a6ff" dur="4s" repeatCount="indefinite" />
+              <animate attributeName="stop-opacity" values="0.5;0.3;0.4;0.5" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stopColor="#e0b8ff" stopOpacity="0.4">
+              <animate attributeName="stop-color" values="#e0b8ff;#7fffe1;#ffe0fb;#e0b8ff" dur="4s" repeatCount="indefinite" />
+              <animate attributeName="stop-opacity" values="0.4;0.2;0.3;0.4" dur="4s" repeatCount="indefinite" />
+            </stop>
           </radialGradient>
         </defs>
-        <path fill={style.fill}>
+        <path fill="url(#zibbyGradient)">
           <animate
             attributeName="d"
-            dur="7s"
+            dur={mode === 'speaking' ? '0.7s' : mode === 'listening' ? '1.2s' : '2s'}
             repeatCount="indefinite"
             values="
-              M51.4,-68.1C66.1,-56.4,77.1,-38.6,77.9,-21.3C78.6,-4.1,69.2,12.5,58.6,27.8C48,43.2,36.3,57.4,21.8,65.5C7.2,73.7,-10.2,75.9,-27.4,70.7C-44.6,65.6,-61.7,53.2,-67.2,37.4C-72.8,21.7,-66.8,2.7,-60.5,-13.2C-54.2,-29.1,-47.6,-42,-36.4,-53.8C-25.1,-65.6,-9.5,-76.2,7.9,-82.2C25.4,-88.2,50.7,-89.7,51.4,-68.1Z;
-              M61.9,-72.4C75.7,-59.3,78.4,-34.1,74.9,-13.5C71.4,7.2,61.6,22.3,50.7,39.2C39.9,56.1,27.9,74.8,12.3,77.8C-3.2,80.8,-22.3,68.1,-38.5,55.5C-54.7,42.9,-67.9,30.4,-72.3,14.2C-76.7,-2,-72.2,-22.1,-62.2,-37.5C-52.2,-52.8,-36.6,-63.4,-20.2,-72.2C-3.8,-81,13.3,-88.1,30.1,-85.6C46.9,-83.1,63.1,-70.9,61.9,-72.4Z;
-              M51.4,-68.1C66.1,-56.4,77.1,-38.6,77.9,-21.3C78.6,-4.1,69.2,12.5,58.6,27.8C48,43.2,36.3,57.4,21.8,65.5C7.2,73.7,-10.2,75.9,-27.4,70.7C-44.6,65.6,-61.7,53.2,-67.2,37.4C-72.8,21.7,-66.8,2.7,-60.5,-13.2C-54.2,-29.1,-47.6,-42,-36.4,-53.8C-25.1,-65.6,-9.5,-76.2,7.9,-82.2C25.4,-88.2,50.7,-89.7,51.4,-68.1Z;
+              M60,40 Q80,10 120,40 Q170,60 140,120 Q120,190 60,160 Q10,120 40,60 Q50,50 60,40 Z;
+              M60,40 Q90,20 120,40 Q170,80 140,120 Q120,190 60,160 Q20,120 40,60 Q50,50 60,40 Z;
+              M60,40 Q80,10 120,40 Q170,60 140,120 Q120,190 60,160 Q10,120 40,60 Q50,50 60,40 Z
             "
           />
         </path>
@@ -54,3 +61,4 @@ function ZibbyBlob({ mood = 'calm' }) {
 }
 
 export default ZibbyBlob;
+
